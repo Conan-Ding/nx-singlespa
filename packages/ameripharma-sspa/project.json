@@ -1,0 +1,56 @@
+{
+  "name": "ameripharma-sspa",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/ameripharma-sspa/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/ameripharma-sspa",
+        "main": "packages/ameripharma-sspa/src/index.ts",
+        "tsConfig": "packages/ameripharma-sspa/tsconfig.lib.json",
+        "assets": [
+          "packages/ameripharma-sspa/*.md",
+          {
+            "input": "./packages/ameripharma-sspa/src",
+            "glob": "**/!(*.ts)",
+            "output": "./src"
+          },
+          {
+            "input": "./packages/ameripharma-sspa/src",
+            "glob": "**/*.d.ts",
+            "output": "./src"
+          },
+          {
+            "input": "./packages/ameripharma-sspa",
+            "glob": "generators.json",
+            "output": "."
+          },
+          {
+            "input": "./packages/ameripharma-sspa",
+            "glob": "executors.json",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "publish": {
+      "command": "node tools/scripts/publish.mjs ameripharma-sspa {args.ver} {args.tag}",
+      "dependsOn": ["build"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "packages/ameripharma-sspa/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}
