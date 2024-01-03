@@ -1,0 +1,65 @@
+const { merge } = require('webpack-merge');
+const singleSpaDefaults = require('webpack-config-single-spa-react');
+const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPlugin');
+const path = require('path');
+module.exports = (webpackConfigEnv, argv) => {
+  const defaultConfig = singleSpaDefaults({
+    orgName: 'ameripharma',
+    projectName: 'app1',
+    webpackConfigEnv,
+    argv,
+  });
+
+  return merge(defaultConfig, {
+    resolve: {
+      extensions: ['.js', '.ts', '.tsx', '.jsx'],
+      alias: {
+        fs: path.resolve(__dirname, 'node_modules/browserify-fs'),
+      },
+    },
+    plugins: [
+      new ModuleFederationPlugin({
+        name: 'app1',
+        filename: 'remoteEntry.js',
+        // exposes: {
+        //   './app1': './src/components/hoc/HostStoreContext/index.tsx',
+        // },
+        remotes: {
+          host: 'host@http://localhost:9000/remoteEntry.js',
+        },
+        shared: {
+          '@babel/runtime': {},
+          mobx: {},
+        },
+      }),
+    ],
+    module: {
+      rules: [
+        {
+          test: /\.s[ac]ss$/i,
+          use: [
+            'style-loader',
+            'css-loader',
+            {
+              loader: 'sass-loader',
+              options: {
+                implementation: require('sass'),
+                sassOptions: {
+                  fiber: false,
+                },
+              },
+            },
+          ],
+        },
+        { parser: { System: false } },
+        {
+          test: /\.js|\.ts|\.tsx|\.jsx$/,
+          exclude: /(node_modules|bower_components)/,
+          use: {
+            loader: 'babel-loader',
+          },
+        },
+      ],
+    },
+  });
+};

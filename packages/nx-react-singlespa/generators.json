@@ -1,0 +1,19 @@
+{
+    "generators": {
+      "application": {
+        "factory": "./src/generators/application/generator",
+        "schema": "./src/generators/application/schema.json",
+        "description": "application generator",
+        "x-use-standalone-layout": false,
+        "aliases": ["app"]
+      },
+      "preset": {
+        "factory": "./src/generators/preset/generator",
+        "schema": "./src/generators/preset/schema.json",
+        "description": "preset generator",
+        "x-use-standalone-layout": true,
+        "aliases": ["preset"]
+      }
+    }
+  }
+  

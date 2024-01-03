@@ -15,6 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@ameripharma-sspa/nx-react-singlespa": [
+        "packages/nx-react-singlespa/src/index.ts"
+      ],
       "ameripharma-sspa": ["packages/ameripharma-sspa/src/index.ts"]
     }
   },

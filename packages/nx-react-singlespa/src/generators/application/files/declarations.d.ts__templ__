@@ -1,0 +1,4 @@
+declare module 'host/CentralStore' {
+  const CentralStore: any; // Replace 'any' with the actual type of your store
+  export default CentralStore;
+}
