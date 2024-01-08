@@ -2,7 +2,9 @@
   "name": "@ameripharma-sspa/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "build-plugins": "./shell/build-plugins.sh"
+  },
   "private": true,
   "dependencies": {
     "@nx/devkit": "17.2.8",
