@@ -46,6 +46,10 @@
         "type": "list",
         "items": [
           {
+            "value": "none",
+            "label": "None"
+          },
+          {
             "value": "css",
             "label": "CSS"
           },
@@ -68,10 +72,6 @@
           {
             "value": "styled-jsx",
             "label": "styled-jsx        [ https://www.npmjs.com/package/styled-jsx ]"
-          },
-          {
-            "value": "none",
-            "label": "None"
           }
         ]
       }
@@ -113,10 +113,10 @@
     },
     "e2eTestRunner": {
       "type": "string",
-      "enum": ["cypress", "playwright", "none"],
+      "enum": ["none", "cypress", "playwright"],
       "description": "Test runner to use for end to end (E2E) tests.",
       "x-prompt": "Which E2E test runner would you like to use?",
-      "default": "cypress"
+      "default": "none"
     },
     "tags": {
       "type": "string",

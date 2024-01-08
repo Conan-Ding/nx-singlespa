@@ -1,46 +1,51 @@
 import {
-  addDependenciesToPackageJson,
-  ensurePackage,
   formatFiles,
   GeneratorCallback,
-  joinPathFragments,
   logger,
   runTasksInSerial,
-  stripIndents,
   Tree,
+  getWorkspaceLayout,
 } from '@nx/devkit';
 import {
   ReactSinglespaGeneratorSchema,
   NormalizedReactSinglespaGeneratorSchema,
 } from './schema';
 import * as chalk from 'chalk';
-import { initGenerator as jsInitGenerator } from '@nx/js';
 import { applicationGenerator } from '@nx/react';
 import { normalizeOptions } from '../lib/normalize-options';
-import { updateFiles } from '../lib/update-files';
+import {
+  addSingleSpaFiles,
+  updateFilesGenerator,
+} from '../lib/update-files';
+// default generator
 export async function appGenerator(
   tree: Tree,
   options: ReactSinglespaGeneratorSchema
-) : Promise<GeneratorCallback>{
+): Promise<GeneratorCallback> {
+  logger.info(chalk.green('appGenerator: start to generate app'));
   const tasks: GeneratorCallback[] = [];
   const { organization, ...rest } = options;
+  // normalize the options
   const normalizedOptions: NormalizedReactSinglespaGeneratorSchema =
     await normalizeOptions(tree, options);
-  const { projectOrganization, projectName } = normalizedOptions;
-  logger.info(`${chalk.bold.yellow('normalizedOptions')} has projectOrganization: ${projectOrganization} and projectName : ${projectName}`)
-  // let @nx/react generate content first
+  // if appDir exists in nx.json, use it, ensure all the files from original generator are in the same directory
+  const { appsDir } = getWorkspaceLayout(tree);
+  if(appsDir) {
+    rest.directory = '.';
+  }
+  // first step, call original generator
   const originalAppGen = await applicationGenerator(tree, rest);
   tasks.push(originalAppGen);
-  const jsInit = await jsInitGenerator(tree, {
-    skipFormat: true,
-  });
-  tasks.push(jsInit);
-  const updateFilesGen = await updateFiles(tree, normalizedOptions);
-  tasks.push(updateFilesGen);
-  //TODO add files after the @nx/react generate content
+  // add more files
+  addSingleSpaFiles(tree, normalizedOptions);
 
-  //TODO update dependencies in package.json after the @nx/react generate content
-  //TODO install deps after the @nx/react generate content
+  // update files
+  const updateFilesGen = await updateFilesGenerator(tree, normalizedOptions);
+  tasks.push(updateFilesGen);
+
+  if (!options.skipFormat) {
+    await formatFiles(tree);
+  }
   return runTasksInSerial(...tasks);
 }
 

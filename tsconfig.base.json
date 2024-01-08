@@ -10,7 +10,10 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
@@ -18,8 +21,18 @@
       "@ameripharma-sspa/nx-react-singlespa": [
         "packages/nx-react-singlespa/src/index.ts"
       ],
-      "ameripharma-sspa": ["packages/ameripharma-sspa/src/index.ts"]
+      "ameripharma-sspa": [
+        "packages/ameripharma-sspa/src/index.ts"
+      ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ],
+  "include": [
+    "declarations.d.ts",
+    "src/**/*"
+  ],
+  "references": []
 }

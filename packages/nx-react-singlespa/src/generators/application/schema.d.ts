@@ -8,4 +8,5 @@ export interface ReactSinglespaGeneratorSchema extends BaseSchema {
 export interface NormalizedReactSinglespaGeneratorSchema extends BaseNormalizedSchema {
     // transfer organization to projectOrganization
     projectOrganization: string;
+    projectParentDirectory: string;
 }
