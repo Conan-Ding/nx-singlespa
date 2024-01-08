@@ -106,11 +106,13 @@ export function updateBabelrc(
     ...babelrcJson.plugins,
     '@babel/plugin-syntax-dynamic-import',
     ['@babel/plugin-transform-private-methods', { loose: true }],
+    ["@babel/plugin-transform-class-properties", { "loose": true }],
+    ["@babel/plugin-transform-private-property-in-object", { "loose": true }]
   ];
   writeJsonFile(babelrcFile, babelrcJson);
 }
 // update package.json
-export function updatePackageJson(tree: Tree): void {
+export function updatePackageJson(tree: Tree, options: NormalizedReactSinglespaGeneratorSchema): void {
   const pkgJsonPath = joinPathFragments(workspaceRoot, 'package.json');
   if (!fs.existsSync(pkgJsonPath)) {
     throw new Error(
@@ -134,8 +136,13 @@ export function updatePackageJson(tree: Tree): void {
     '@babel/preset-react': '^7.23.3',
     'babel-jest': '^29.4.1',
   };
+  const {
+    projectParentDirectory,
+    projectName,
+  } = options;
+  const webpackBasePath = joinPathFragments(projectParentDirectory, projectName)
+  packageJson.scripts[`run:single-spa-${options.projectName}`] = `webpack serve --config ${webpackBasePath}/extra-webpack.config.js`;
   writeJsonFile(pkgJsonPath, packageJson);
-  // process.chdir(tree.root);
   process.chdir(workspaceRoot);
 
   exec('npm install', (error, stdout, stderr) => {
@@ -179,7 +186,7 @@ export async function updateFilesGenerator(
   return () => {
     updateTsConfig(tree, options);
     updateBabelrc(tree, options);
-    updatePackageJson(tree);
+    updatePackageJson(tree, options);
   };
 }
 export default updateFilesGenerator;

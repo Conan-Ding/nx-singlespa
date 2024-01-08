@@ -4,13 +4,14 @@ const ModuleFederationPlugin = require('webpack/lib/container/ModuleFederationPl
 const path = require('path');
 module.exports = (webpackConfigEnv, argv) => {
   const defaultConfig = singleSpaDefaults({
-    orgName: 'ameripharma',
-    projectName: 'app1',
+    orgName: '<%= projectOrganization %>',
+    projectName: '<%= projectName %>',
     webpackConfigEnv,
     argv,
   });
 
   return merge(defaultConfig, {
+    entry: path.resolve(__dirname, 'src/<%= projectOrganization %>-<%= projectName %>.js'),
     resolve: {
       extensions: ['.js', '.ts', '.tsx', '.jsx'],
       alias: {
@@ -19,10 +20,10 @@ module.exports = (webpackConfigEnv, argv) => {
     },
     plugins: [
       new ModuleFederationPlugin({
-        name: 'app1',
+        name: '<%= projectName %>',
         filename: 'remoteEntry.js',
         // exposes: {
-        //   './app1': './src/components/hoc/HostStoreContext/index.tsx',
+        //   './<%= projectName %>': './src/components/hoc/HostStoreContext/index.tsx',
         // },
         remotes: {
           host: 'host@http://localhost:9000/remoteEntry.js',
